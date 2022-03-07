@@ -5,21 +5,39 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Copyright from '../components/Copyright';
-
+import Copyright from './components/Copyright';
+import { useRouter } from 'next/router';
+import { useAuth } from '../lib/context/userContext';
+import useFirebaseAuth from '../lib/hooks/useFirebaseAuth';
 
 export default function Login() {
+  const router = useRouter();
+  const { authUser } = useAuth();
+  const { signIn } = useFirebaseAuth();
 
+  React.useEffect(() => {
+    if (authUser) {
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email')?.toString();
+    const password = data.get('password')?.toString();
+    if(!email || !password) return;
+    try{
+      const userCredentials = await signIn(email, password);
+    
+      if(userCredentials){
+        router.push('/');
+      }
+    } catch(error: any){
+      console.log('Error: ', error?.message);
+    }
+  
   };
 
   return (
