@@ -9,33 +9,41 @@ import Copyright from './components/Copyright';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/context/userContext';
 import useFirebaseAuth from '../lib/hooks/useFirebaseAuth';
+import Snackbar from './components/Snackbar';
 
 export default function Login() {
   const router = useRouter();
+  const [showErrorSnackBar, setShowErrorSnackBar] = React.useState(false);
+  const [showSuccessSnackBar, setShowSuccessSnackBar] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
+
   const { authUser } = useAuth();
   const { signIn } = useFirebaseAuth();
 
   React.useEffect(() => {
     if (authUser) {
-      router.push('/');
+      router.replace('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authUser]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setSubmitting(true);
     const data = new FormData(event.currentTarget);
     const email = data.get('email')?.toString();
     const password = data.get('password')?.toString();
     if(!email || !password) return;
     try{
       const userCredentials = await signIn(email, password);
-    
       if(userCredentials){
         router.push('/');
+        setShowSuccessSnackBar(true);
       }
     } catch(error: any){
-      console.log('Error: ', error?.message);
+      setShowErrorSnackBar(true);
+    }finally{
+      setSubmitting(false);
     }
   
   };
@@ -82,6 +90,7 @@ export default function Login() {
               color="secondary"
               fullWidth
               variant="contained"
+              disabled={submitting}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
@@ -89,6 +98,8 @@ export default function Login() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
+        { showSuccessSnackBar && <Snackbar openProp={showSuccessSnackBar} message="Successfully logged in" onClose={() => setShowSuccessSnackBar(false)} variant="success" /> }
+        { showErrorSnackBar && <Snackbar openProp={showErrorSnackBar} message="Invalid email or password" variant="error" onClose={() => setShowErrorSnackBar(false)} /> }
       </Container>
 
   );
