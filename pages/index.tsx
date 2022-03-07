@@ -1,12 +1,27 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 import type { NextPage } from 'next';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Link from '../components/Link';
-import Copyright from '../components/Copyright';
+import Link from './components/Link';
+import Copyright from './components/Copyright';
+import { useAuth } from '../lib/context/userContext'; 
+import { useRouter } from 'next/router';
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const { authUser } = useAuth();
+  useEffect(() => {
+    if (!authUser) {
+      router.push('/login');
+    } 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!authUser) {
+    return <div></div>;
+  }
+
   return (
     <Container maxWidth="lg">
       <Box
