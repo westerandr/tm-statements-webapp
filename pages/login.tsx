@@ -9,12 +9,11 @@ import Copyright from './components/Copyright';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/context/userContext';
 import useFirebaseAuth from '../lib/hooks/useFirebaseAuth';
-import Snackbar from './components/Snackbar';
+// import Snackbar from './components/Snackbar';
+import { toast } from 'material-react-toastify';
 
 export default function Login() {
   const router = useRouter();
-  const [showErrorSnackBar, setShowErrorSnackBar] = React.useState(false);
-  const [showSuccessSnackBar, setShowSuccessSnackBar] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
 
   const { authUser } = useAuth();
@@ -38,10 +37,10 @@ export default function Login() {
       const userCredentials = await signIn(email, password);
       if(userCredentials){
         router.push('/');
-        setShowSuccessSnackBar(true);
+        toast('Login Successful', { type: 'success' });
       }
     } catch(error: any){
-      setShowErrorSnackBar(true);
+      toast("Invalid email or password", { type: 'error' });
     }finally{
       setSubmitting(false);
     }
@@ -98,8 +97,6 @@ export default function Login() {
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
-        { showSuccessSnackBar && <Snackbar openProp={showSuccessSnackBar} message="Successfully logged in" onClose={() => setShowSuccessSnackBar(false)} variant="success" /> }
-        { showErrorSnackBar && <Snackbar openProp={showErrorSnackBar} message="Invalid email or password" variant="error" onClose={() => setShowErrorSnackBar(false)} /> }
       </Container>
 
   );

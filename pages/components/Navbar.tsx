@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import useFirebaseAuth from '../../lib/hooks/useFirebaseAuth';
+import { toast } from 'material-react-toastify';
 
 const pages = ["Orders", "Customers"]
 const settings = ['Logout'];
@@ -25,7 +26,8 @@ function Navbar() {
 
   const logOut = () => {
     signOut();
-    router.push('/login');
+    toast("Successfully Logged Out", { type: 'success' });
+    router.replace('/login');
   }
 
   const handleSetting = (setting: string) => {
