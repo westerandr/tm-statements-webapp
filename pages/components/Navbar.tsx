@@ -26,8 +26,8 @@ function Navbar() {
 
   const logOut = () => {
     signOut();
-    toast("Successfully Logged Out", { type: 'success' });
     router.replace('/login');
+    toast("Successfully Logged Out", { type: 'success' });
   }
 
   const handleSetting = (setting: string) => {
