@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
 import type { NextPage } from 'next';
+import { useAuth } from '../lib/context/userContext'; 
+import { useRouter } from 'next/router';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Link from './components/Link';
 import Copyright from './components/Copyright';
 import Navbar from './components/Navbar';
-import { useAuth } from '../lib/context/userContext'; 
-import { useRouter } from 'next/router';
+import Customers from './components/Customers';
+
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -32,12 +34,7 @@ const Home: NextPage = () => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h4" component="h1" gutterBottom>
-            MUI v5 + Next.js with TypeScript example
-          </Typography>
-          <Link href="/about" color="secondary">
-            Go to the about page
-          </Link>
+          <Customers />
           <Copyright />
         </Box>
       </Container>
