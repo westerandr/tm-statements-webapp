@@ -2,28 +2,54 @@ import { useState, useEffect } from 'react'
 import { database } from '../../config/firebase';
 import { collection } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
-import { Container, Typography, List, ListItem } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress } from '@mui/material';
 import { Customer } from '../../lib/types';
-import { CircularProgress } from '@mui/material';
+import PageViewIcon  from '@mui/icons-material/Pageview';
+import EditIcon  from '@mui/icons-material/Edit';
+import DeleteIcon  from '@mui/icons-material/Delete';
+
 
 const customersCollection = collection(database, 'users');
 
 function CustomerList() {
   const [ users, usersloading, userserror ] = useCollection(customersCollection, { });
-  console.log(users?.docs, usersloading, userserror)
+
+  if(usersloading) {
+    return <CircularProgress />
+  }
+
   return (
     <Container>
         <Typography variant="h6" gutterBottom>Customers</Typography>
-        { usersloading ? <CircularProgress /> : <></>}
+       
         <List >
         {
           users && !users.empty && users.docs.map((doc: any) => {
             const customer: Customer = doc.data();
-            console.log(customer);
+          
             return (
           
                 <ListItem key={customer?.uid}>
-                  {customer?.firstName} {customer?.lastName}
+                  <ListItemText
+                    primary={`${customer?.firstName} ${customer?.lastName}`}
+                    secondary={`@${customer?.handle}`}
+                  />
+                  <ListItemIcon>
+                    <IconButton>
+                      <PageViewIcon />
+                    </IconButton>
+                  </ListItemIcon>
+                  <ListItemIcon>
+                    <IconButton>
+                      <EditIcon />
+                    </IconButton>
+                  </ListItemIcon>
+                  <ListItemIcon>
+                    <IconButton>
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemIcon>
+                  
                 </ListItem>
             
             )
