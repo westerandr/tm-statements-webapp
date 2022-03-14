@@ -9,7 +9,6 @@ import Copyright from './components/Copyright';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/context/userContext';
 import useFirebaseAuth from '../lib/hooks/useFirebaseAuth';
-// import Snackbar from './components/Snackbar';
 import { toast } from 'material-react-toastify';
 
 export default function Login() {

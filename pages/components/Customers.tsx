@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 function Customers() {
   return (
     <Container>
-      <Grid container>
+      <Grid container spacing={5}>
         <Grid item xs={12} md={6}><CustomerForm /></Grid>
         <Grid item xs={12} md={6}><CustomerList /></Grid>
       </Grid>

@@ -35,7 +35,7 @@ const Home: NextPage = () => {
           }}
         >
           <Customers />
-          <Copyright />
+          <Copyright sx={{ mt: 8, mb: 4 }} />
         </Box>
       </Container>
     </>
