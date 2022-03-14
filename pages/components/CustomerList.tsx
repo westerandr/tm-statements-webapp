@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { database } from '../../config/firebase';
-import { collection } from 'firebase/firestore';
+import { collection, DocumentSnapshot } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress } from '@mui/material';
 import { Customer } from '../../lib/types';
@@ -13,6 +14,11 @@ const customersCollection = collection(database, 'users');
 
 function CustomerList() {
   const [ users, usersloading, userserror ] = useCollection(customersCollection, { });
+  const router = useRouter();
+
+  const viewCustomer = (uid: string) => {
+    router.push(`/customers/${uid}`);
+  }
 
   if(usersloading) {
     return <CircularProgress />
@@ -24,9 +30,10 @@ function CustomerList() {
        
         <List >
         {
-          users && !users.empty && users.docs.map((doc: any) => {
-            const customer: Customer = doc.data();
-          
+          users && !users.empty && users.docs.map((doc: DocumentSnapshot) => {
+            const data : any = doc.data();
+            const customer : Customer = { ...data, uid: doc.id };
+
             return (
           
                 <ListItem key={customer?.uid}>
@@ -35,7 +42,7 @@ function CustomerList() {
                     secondary={`@${customer?.handle}`}
                   />
                   <ListItemIcon>
-                    <IconButton>
+                    <IconButton onClick={() => viewCustomer(doc?.id)}>
                       <PageViewIcon />
                     </IconButton>
                   </ListItemIcon>
