@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
+import { Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
 
 const rows = [
   { points: 150, rewards: '10% Discount' },
@@ -10,15 +10,14 @@ const rows = [
 
 function RedemptionInfo() {
   return (
-    <Container>
-      <Typography variant='h3' sx={{my: '1rem'}}>Options of Redemption</Typography>
+    <>
       <Typography variant='body1' sx={{ mb: '2rem'}}>$1 Spent = 1 Point Earned</Typography>
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
-          <TableRow>
-            <TableCell>Points</TableCell>
-            <TableCell>Rewards</TableCell>
+          <TableRow sx={{ background: 'teal'}}>
+            <TableCell sx={{color: 'white'}}>Points</TableCell>
+            <TableCell sx={{color: 'white'}}>Rewards</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -40,7 +39,7 @@ function RedemptionInfo() {
     </TableContainer>
 
 
-    </Container>
+    </>
   )
 }
 
