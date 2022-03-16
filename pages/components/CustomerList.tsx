@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { database } from '../../config/firebase';
 import { collection, DocumentSnapshot, doc, deleteDoc } from 'firebase/firestore';
@@ -11,10 +10,13 @@ import DeleteIcon  from '@mui/icons-material/Delete';
 import { toast } from 'material-react-toastify';
 import { useConfirmDialog } from 'react-mui-confirm';
 
+type CustomerListProps = {
+  setMode: (mode: string, customer: Customer) => void;
+}
 
 const customersCollection = collection(database, 'users');
 
-function CustomerList() {
+function CustomerList({ setMode } : CustomerListProps) {
   const [ users, usersloading ] = useCollection(customersCollection, { });
   const router = useRouter();
   const confirm = useConfirmDialog();
@@ -63,7 +65,7 @@ function CustomerList() {
                     </IconButton>
                   </ListItemIcon>
                   <ListItemIcon>
-                    <IconButton>
+                    <IconButton onClick={() => setMode('edit', customer)}>
                       <EditIcon />
                     </IconButton>
                   </ListItemIcon>
