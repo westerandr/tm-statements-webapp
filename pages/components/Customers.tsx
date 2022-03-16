@@ -24,8 +24,8 @@ function Customers() {
   return (
     <Container>
       <Grid container spacing={5}>
-        <Grid item xs={12} md={6}><CustomerForm mode={mode} setMode={handleModeChange} editableCustomer={customer} /></Grid>
         <Grid item xs={12} md={6}><CustomerList setMode={handleModeChange} /></Grid>
+        <Grid item xs={12} md={6}><CustomerForm mode={mode} setMode={handleModeChange} editableCustomer={customer} /></Grid>
       </Grid>
     </Container>
 
