@@ -8,6 +8,7 @@ import theme from '../config/theme';
 import createEmotionCache from '../config/createEmotionCache';
 import { AuthUserProvider } from '../lib/context/userContext';
 import { ToastContainer } from 'material-react-toastify';
+import { ConfirmDialogProvider } from 'react-mui-confirm';
 import 'material-react-toastify/dist/ReactToastify.css';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -27,7 +28,12 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-         <AuthUserProvider><Component {...pageProps} /><ToastContainer /></AuthUserProvider>
+        <ConfirmDialogProvider>
+          <AuthUserProvider>
+            <Component {...pageProps} />
+            <ToastContainer />
+          </AuthUserProvider>
+        </ConfirmDialogProvider>
       </ThemeProvider>
     </CacheProvider>
   );
