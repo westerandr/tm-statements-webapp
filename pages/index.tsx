@@ -13,13 +13,17 @@ import Customers from './components/Customers';
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { authUser } = useAuth();
+  const { authUser, loading } = useAuth();
   useEffect(() => {
     if (!authUser) {
       router.replace('/login');
     } 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser]);
+
+  if (loading) {
+    return <></>;
+  }
 
   return (
     <>
