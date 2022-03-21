@@ -6,3 +6,12 @@ export type Customer = {
   amountSpent: number;
   currentPoints: number;
 }
+
+export type Order = {
+  uid: string;
+  amount: number;
+  created: Date;
+  items: string;
+  paid: boolean;
+  user: string;
+}
