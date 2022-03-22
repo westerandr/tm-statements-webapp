@@ -28,7 +28,7 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authUser]);
 
-  if (loading) {
+  if (loading || usersloading) {
     return <></>;
   }
 

@@ -32,7 +32,11 @@ export default function Login() {
     const data = new FormData(event.currentTarget);
     const email = data.get('email')?.toString();
     const password = data.get('password')?.toString();
-    if(!email || !password) return;
+    if(!email || !password){
+      setSubmitting(false);
+      toast.error('Please fill in all fields');
+      return;
+    }
     try{
       const userCredentials = await signIn(email, password);
       if(userCredentials){
