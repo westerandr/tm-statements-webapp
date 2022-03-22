@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { database } from '../../config/firebase';
-import { collection, DocumentSnapshot, doc, deleteDoc, query, orderBy } from 'firebase/firestore';
+import { collection, DocumentSnapshot, doc, deleteDoc, query, orderBy, QuerySnapshot, DocumentData } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress } from '@mui/material';
 import { Customer } from '../../lib/types';
@@ -11,14 +11,15 @@ import { toast } from 'material-react-toastify';
 import { useConfirmDialog } from 'react-mui-confirm';
 
 type CustomerListProps = {
+  customers: QuerySnapshot<DocumentData> | undefined;
+  customersLoading: boolean;
   setMode: (mode: string, customer: Customer) => void;
 }
 
 const customersCollection = collection(database, 'users');
 
-function CustomerList({ setMode } : CustomerListProps) {
-  const q = query(customersCollection, orderBy('firstName') );
-  const [ users, usersloading ] = useCollection(q, { });
+function CustomerList({ customers, customersLoading, setMode } : CustomerListProps) {
+  
   const router = useRouter();
   const confirm = useConfirmDialog();
 
@@ -39,7 +40,7 @@ function CustomerList({ setMode } : CustomerListProps) {
   };
 
 
-  if(usersloading) {
+  if(customersLoading) {
     return <CircularProgress />
   }
 
@@ -49,7 +50,7 @@ function CustomerList({ setMode } : CustomerListProps) {
        
         <List >
         {
-          users && !users.empty && users.docs.map((doc: DocumentSnapshot) => {
+          customers && !customers.empty && customers.docs.map((doc: DocumentSnapshot) => {
             const data : any = doc.data();
             const customer : Customer = { ...data, uid: doc.id };
 
@@ -81,7 +82,7 @@ function CustomerList({ setMode } : CustomerListProps) {
             )
           })
         }
-        { users?.empty && <Typography variant="body1">No customers, use the form to create one!</Typography> }
+        { customers?.empty && <Typography variant="body1">No customers, use the form to create one!</Typography> }
         </List>
     </Container>
   )

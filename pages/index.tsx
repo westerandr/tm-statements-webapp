@@ -2,6 +2,9 @@ import { useEffect } from 'react';
 import type { NextPage } from 'next';
 import { useAuth } from '../lib/context/userContext'; 
 import { useRouter } from 'next/router';
+import { database } from '../config/firebase';
+import  { collection, query, orderBy } from 'firebase/firestore';
+import { useCollection } from 'react-firebase-hooks/firestore';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -10,10 +13,14 @@ import Navbar from './components/Navbar';
 import Customers from './components/Customers';
 import Orders from './components/Orders';
 
+const customersCollection = collection(database, 'users');
 
 const Home: NextPage = () => {
   const router = useRouter();
   const { authUser, loading } = useAuth();
+  const q = query(customersCollection, orderBy('firstName') );
+  const [ users, usersloading ] = useCollection(q, { });
+
   useEffect(() => {
     if (!authUser) {
       router.replace('/login');
@@ -38,7 +45,7 @@ const Home: NextPage = () => {
             alignItems: 'center',
           }}
         >
-          <Customers />
+          <Customers customers={users} customersLoading={usersloading}  />
           <Divider sx={{my:'2rem'}} light />
           <Orders />
           <Copyright sx={{ mt: 8, mb: 4 }} />
