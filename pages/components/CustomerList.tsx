@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { database } from '../../config/firebase';
-import { collection, DocumentSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { collection, DocumentSnapshot, doc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress } from '@mui/material';
 import { Customer } from '../../lib/types';
@@ -17,7 +17,8 @@ type CustomerListProps = {
 const customersCollection = collection(database, 'users');
 
 function CustomerList({ setMode } : CustomerListProps) {
-  const [ users, usersloading ] = useCollection(customersCollection, { });
+  const q = query(customersCollection, orderBy('firstName') );
+  const [ users, usersloading ] = useCollection(q, { });
   const router = useRouter();
   const confirm = useConfirmDialog();
 
