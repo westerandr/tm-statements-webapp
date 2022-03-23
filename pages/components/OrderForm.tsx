@@ -1,5 +1,10 @@
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { Container, Grid, Typography, Button, FormControl, TextField, InputAdornment, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Customer } from '../../lib/types';
+
+type OrderFormProps = {
+  customers: Customer[];
+}
 
 const initState = {
   amount: 0,
@@ -7,7 +12,7 @@ const initState = {
   user: "",
 }
 
-function OrderForm() {
+function OrderForm({ customers }: OrderFormProps ) {
   const [order, setOrder] = useState(initState);
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -60,14 +65,14 @@ function OrderForm() {
           placeholder='Select Customer'
          
         >
-          {/* {names.map((name) => (
+          {customers.map((customer) => (
             <MenuItem
-              key={name}
-              value={name}
+              key={customer.uid}
+              value={customer.uid}
             >
-              {name}
+              {`${customer.firstName} ${customer.lastName}`}
             </MenuItem>
-          ))} */}
+          ))}
         </Select>
         </FormControl>
         <FormControl sx={{ marginBottom: '1rem' }} fullWidth>

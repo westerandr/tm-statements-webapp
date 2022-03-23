@@ -47,7 +47,7 @@ const Home: NextPage = () => {
         >
           <Customers customers={users} customersLoading={usersloading}  />
           <Divider sx={{my:'2rem'}} light />
-          <Orders />
+          <Orders customerDocs={users} customersLoading={usersloading} />
           <Copyright sx={{ mt: 8, mb: 4 }} />
         </Box>
       </Container>
