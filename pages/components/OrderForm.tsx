@@ -1,6 +1,9 @@
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { database } from '../../config/firebase';
+import { doc, addDoc, updateDoc, getDocs, collection, query, where, Timestamp } from 'firebase/firestore';
 import { Container, Grid, Typography, Button, FormControl, TextField, InputAdornment, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
 import { Customer } from '../../lib/types';
+import { toast } from 'material-react-toastify';
 
 type OrderFormProps = {
   customers: Customer[];
@@ -10,20 +13,71 @@ const initState = {
   amount: 0,
   items: "",
   user: "",
+  paid: false,
+  created: Timestamp.now(),
 }
+
+const customersCollection = collection(database, 'users');
+const ordersCollection = collection(database, 'orders');
 
 function OrderForm({ customers }: OrderFormProps ) {
   const [order, setOrder] = useState(initState);
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (order.user === "" || order.items === "" || order.amount === 0) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+    setOrder({
+      ...order,
+      paid: false,
+      created: Timestamp.now(),
+    });
+
+    let customer: Customer | undefined;
+    try{
+       customer = customers.find(c => c.uid === order.user);
+       if(!customer) throw new Error("Customer not found");
+      // query for existing customer
+      const q = await query(customersCollection, where('handle', '==', customer?.handle));
+      const snapshotDoc = await getDocs(q);
+      if(snapshotDoc.empty) throw new Error("Customer not found");
+    }catch(e){
+        toast(`Customer ${customer?.firstName} ${customer?.lastName} does not exist`, { type: 'error' });
+        return;
+    }
+    const docRef = doc(customersCollection, customer.uid);
+    const result = await addDoc(ordersCollection, order);
+    if(result) {
+      toast(`Order created successfully`, { type: 'success' });
+      const points: number = Number(order.amount.toFixed(0));
+      updateDoc(docRef, {
+        currentPoints: Number(customer?.currentPoints) + points,
+        amountSpent: Number(customer?.amountSpent) + order.amount,
+      }).then(() => toast(`${customer?.firstName} ${customer?.lastName}'s points updated successfully`, { type: 'success' }))
+      .catch(() => toast("Points could not be added to Customer Account. Please Edit Customer Manually", { type: 'error' }))
+      .finally(() => clearForm());
+    
+      
+    }else {
+      toast("Order could not be processed", { type: 'error' });
+    }
   }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setOrder({
-      ...order,
-      [e.target.name]: e.target.value,
-    });
+    if(e.target.name == "amount") {
+      setOrder({
+        ...order,
+        [e.target.name]: Math.abs(parseInt(e.target.value))
+      })
+    }else{
+      setOrder({
+        ...order,
+        [e.target.name]: e.target.value
+      })
+    }
+   
   }
 
   const handleSelect = (e: SelectChangeEvent<string>) => {
@@ -84,6 +138,7 @@ function OrderForm({ customers }: OrderFormProps ) {
             minRows={3}
             multiline
             value={order.items}
+            helperText="Enter items purchased (Separate Each Item by Commas)"
             onChange={handleChange}
           />
         </FormControl>

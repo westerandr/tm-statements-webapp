@@ -1,10 +1,8 @@
 import { useRouter } from 'next/router'
 import { database } from '../../config/firebase';
-import { collection, DocumentSnapshot, doc, deleteDoc, query, orderBy, QuerySnapshot, DocumentData } from 'firebase/firestore';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress } from '@mui/material';
+import { collection, DocumentSnapshot, doc, deleteDoc, QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress, Button } from '@mui/material';
 import { Customer } from '../../lib/types';
-import PageViewIcon  from '@mui/icons-material/Pageview';
 import EditIcon  from '@mui/icons-material/Edit';
 import DeleteIcon  from '@mui/icons-material/Delete';
 import { toast } from 'material-react-toastify';
@@ -62,18 +60,18 @@ function CustomerList({ customers, customersLoading, setMode } : CustomerListPro
                     secondary={`@${customer?.handle}`}
                   />
                   <ListItemIcon>
-                    <IconButton onClick={() => viewCustomer(doc?.id)}>
-                      <PageViewIcon />
-                    </IconButton>
+                    <Button variant="text" color="secondary"  onClick={() => viewCustomer(doc?.id)}>
+                      View
+                    </Button>
                   </ListItemIcon>
                   <ListItemIcon>
                     <IconButton onClick={() => setMode('edit', customer)}>
-                      <EditIcon />
+                      <EditIcon sx={{ color: 'orange' }} />
                     </IconButton>
                   </ListItemIcon>
                   <ListItemIcon>
                     <IconButton onClick={() => confirmDeletion(customer?.uid, customer.handle)}>
-                      <DeleteIcon />
+                      <DeleteIcon sx={{ color: 'red' }} />
                     </IconButton>
                   </ListItemIcon>
                   

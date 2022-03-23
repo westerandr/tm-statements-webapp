@@ -41,6 +41,7 @@ function CustomerForm({ mode, setMode, editableCustomer} : CustomerFormProps) {
     }else{
       setCustomer(initialState);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode])
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
