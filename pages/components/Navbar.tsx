@@ -11,6 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import useFirebaseAuth from '../../lib/hooks/useFirebaseAuth';
+import Link from './Link';
 import { toast } from 'material-react-toastify';
 
 const settings = ['Logout'];
@@ -40,6 +41,10 @@ function Navbar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  if(!authUser){
+    return null;
+  }
   
   return (
     <AppBar position="static" color='secondary'>
@@ -51,7 +56,9 @@ function Navbar() {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            <Avatar sx={{ width: 50, height: 50 }} src="/logo.jpg" />
+            <Link href="/">
+              <Avatar sx={{ width: 50, height: 50 }} src="/logo.jpg" />
+            </Link>
           </Typography>          
           <Typography
             variant="h6"
