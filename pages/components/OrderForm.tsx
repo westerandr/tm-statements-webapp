@@ -13,7 +13,6 @@ const initState = {
   amount: 0,
   items: "",
   user: "",
-  paid: false,
   created: Timestamp.now(),
 }
 
@@ -31,7 +30,6 @@ function OrderForm({ customers }: OrderFormProps ) {
     }
     setOrder({
       ...order,
-      paid: false,
       created: Timestamp.now(),
     });
 
