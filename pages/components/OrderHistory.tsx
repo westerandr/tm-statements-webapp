@@ -1,9 +1,6 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button } from '@mui/material';
 import React from 'react'
 import { Customer, Order } from '../../lib/types';
-import { useAuth } from '../../lib/context/userContext'; 
-import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
 
 type OrderHistoryProps = {
   orders: Order[] | null;
@@ -12,7 +9,6 @@ type OrderHistoryProps = {
 }
 
 function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
-  const { authUser } = useAuth();
   const getCustomerName = (uid: string) => {
     const customer = customers.find(customer => customer.uid === uid);
     if(!customer) return 'N/A';
@@ -25,7 +21,7 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
       <TableHead>
         <TableRow>
           <TableCell sx={{color:'teal'}}>Date</TableCell>
-          <TableCell sx={{color:'teal'}}>User</TableCell>
+          { !singleUser && <TableCell sx={{color:'teal'}}>User</TableCell>}
           <TableCell sx={{color:'teal'}}>Items</TableCell>
           <TableCell sx={{color:'teal'}}>Amount</TableCell>
         </TableRow>
@@ -39,7 +35,7 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
             <TableCell component="th" scope="row">
               {order.created.toDateString()}
             </TableCell>
-            <TableCell>{getCustomerName(order.user)}</TableCell>
+            { !singleUser && <TableCell>{getCustomerName(order.user)}</TableCell>} 
             <TableCell>
               <ul>
               {

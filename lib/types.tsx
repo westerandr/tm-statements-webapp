@@ -12,7 +12,6 @@ export type Order = {
   amount: number;
   created: Date;
   items: string;
-  paid: boolean;
   user: string;
 }
 
