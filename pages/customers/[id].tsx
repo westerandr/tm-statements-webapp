@@ -2,10 +2,11 @@ import React from 'react';
 import { database } from '../../config/firebase';
 import { collection, doc, DocumentData, DocumentReference, DocumentSnapshot, getDoc, getDocs, where, query, orderBy } from 'firebase/firestore';
 import { Container, Typography } from '@mui/material';
-import { Customer as CustomerType, Order, Redemption } from '../../lib/types';
+import { Customer as CustomerType, Redemption } from '../../lib/types';
 import RedemptionInfo from '../components/RedemptionInfo';
 import OrderHistory from '../components/OrderHistory';
 import Navbar from '../components/Navbar';
+import Rewards from '../components/Rewards';
 
 const customersCollection = collection(database, 'users');
 const ordersCollection = collection(database, 'orders');
@@ -14,7 +15,7 @@ const redemptionsCollection = collection(database, 'redemptions');
 type CustomerProps = {
   customer: CustomerType;
   orders: any[];
-  redemptions: Redemption[];
+  redemptions: any[];
 }
 
 function Customer({ customer, orders, redemptions } : CustomerProps) {
@@ -23,7 +24,13 @@ function Customer({ customer, orders, redemptions } : CustomerProps) {
   orders = orders.map((order) => {
     order.created = new Date(order.created);
     return order;
-  })
+  });
+
+  // change date string back to date
+  redemptions = redemptions.map((redemption) => {
+    redemption.created = new Date(redemption.created);
+    return redemption;
+  });
 
   return (
     <>
@@ -35,6 +42,13 @@ function Customer({ customer, orders, redemptions } : CustomerProps) {
         <Typography variant="body1" sx={{mt: '1rem', mb: '3rem', fontSize: '1.5rem'}}>{`Current Points: ${customer.currentPoints}`}</Typography>
         <Typography variant="h2" sx={{mb: '1rem', fontSize: '2.8rem'}}>Order History</Typography>
         <OrderHistory orders={orders} customers={[customer]} singleUser />
+        {redemptions.length > 0 && (
+          <>
+          <Typography variant="h2" sx={{mb: '1rem', mt: '3rem', fontSize: '2.8rem'}}>Rewards</Typography>
+          <Rewards redemptions={redemptions} />
+          </>
+        )}
+
         <Typography variant="h2" sx={{mb: '1rem', mt: '3rem', fontSize: '2.8rem'}}>Redemption Info</Typography>
         <RedemptionInfo customer={customer} />
       </Container>
@@ -65,10 +79,29 @@ export async function getServerSideProps(context : any) {
        uid: doc.id });
   });
 
+  // get redemptions for customer
+  const redemptionsQuery = query(redemptionsCollection, where('user', '==', customer.uid));
+  const redemptionsSnapshot = await getDocs(redemptionsQuery);
+  const redemptions: Redemption[] = [];
+
+  redemptionsSnapshot.docs.map(doc => {
+    const data = doc.data();
+    redemptions.push({
+      pointsDeducted: data.pointsDeducted,
+      reward: data.reward,
+      created: data.created.toDate().toISOString(),
+      user: data.user,
+      used: data.used,
+      uid: doc.id
+    } as Redemption);
+  });
+
+
     return {
       props: {
         customer,
-        orders
+        orders,
+        redemptions
       }
     }
 

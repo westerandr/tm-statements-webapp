@@ -42,6 +42,7 @@ function RedemptionInfo({ customer }: RedemptionInfoProps) {
             currentPoints: Number(customer.currentPoints) - cost,
           });
           toast.success(`${customer.firstName} redeemed ${reward} successfully.`, { type: 'success' });
+          window.location.reload();
         }
       }
     }
