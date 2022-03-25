@@ -17,10 +17,19 @@ const initState = {
 }
 
 const customersCollection = collection(database, 'users');
+const redemptionsCollection = collection(database, 'redemptions');
 const ordersCollection = collection(database, 'orders');
 
 function OrderForm({ customers }: OrderFormProps ) {
   const [order, setOrder] = useState(initState);
+  const [numRedemptionsAvailable, setNumRedemptionsAvailable] = useState(0);
+
+  const getNumRedemptionsAvailable = (uid: string) => {
+    const q = query(redemptionsCollection, where('user', '==', uid), where('used', '==', false) );
+    getDocs(q).then(snapshot => {
+     setNumRedemptionsAvailable(snapshot.docs.length);
+    });
+  }
 
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,9 +92,11 @@ function OrderForm({ customers }: OrderFormProps ) {
       ...order,
       [e.target.name]: e.target.value,
     });
+    getNumRedemptionsAvailable(e.target.value);
   }
 
   const clearForm = () => {
+    setNumRedemptionsAvailable(0);
     setOrder(initState);
   }
 
@@ -126,6 +137,7 @@ function OrderForm({ customers }: OrderFormProps ) {
             </MenuItem>
           ))}
         </Select>
+            { numRedemptionsAvailable > 0 && <Typography color="secondary" variant="body2" gutterBottom> {`${numRedemptionsAvailable} Redemptions Available`} </Typography> }
         </FormControl>
         <FormControl sx={{ marginBottom: '1rem' }} fullWidth>
           <TextField

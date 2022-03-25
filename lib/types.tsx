@@ -18,7 +18,8 @@ export type Order = {
 export type Redemption = {
   uid: string;
   pointsDeducted: number;
-  discount: string;
+  reward: string;
   created: Date;
+  used: boolean;
   user: string;
 }

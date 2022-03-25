@@ -19,11 +19,11 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
     <TableContainer component={Paper}>
     <Table sx={{ minWidth: 650 }} aria-label="simple table">
       <TableHead>
-        <TableRow>
-          <TableCell sx={{color:'teal'}}>Date</TableCell>
-          { !singleUser && <TableCell sx={{color:'teal'}}>User</TableCell>}
-          <TableCell sx={{color:'teal'}}>Items</TableCell>
-          <TableCell sx={{color:'teal'}}>Amount</TableCell>
+        <TableRow sx={{ backgroundColor: 'teal'}}>
+          <TableCell sx={{color:'white'}}>Date</TableCell>
+          { !singleUser && <TableCell sx={{color:'white'}}>User</TableCell>}
+          <TableCell sx={{color:'white'}}>Items</TableCell>
+          <TableCell sx={{color:'white'}}>Amount</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
