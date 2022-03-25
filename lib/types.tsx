@@ -15,3 +15,11 @@ export type Order = {
   paid: boolean;
   user: string;
 }
+
+export type Redemption = {
+  uid: string;
+  pointsDeducted: number;
+  discount: string;
+  created: Date;
+  user: string;
+}

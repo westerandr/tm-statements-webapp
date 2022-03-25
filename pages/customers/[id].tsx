@@ -23,7 +23,7 @@ function Customer({ customer } : CustomerProps) {
         <Typography variant="body1" sx={{mt: '1rem', fontSize: '1.5rem'}}>{`Total Amount Spent: $${customer.amountSpent}`}</Typography>
         <Typography variant="body1" sx={{mt: '1rem', mb: '5rem', fontSize: '1.5rem'}}>{`Current Points: ${customer.currentPoints}`}</Typography>
         <Typography variant="h2" sx={{mb: '1rem', fontSize: '2.8rem'}}>Redemption Info</Typography>
-        <RedemptionInfo />
+        <RedemptionInfo customer={customer} />
       </Container>
     </>
   )
