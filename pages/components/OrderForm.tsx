@@ -58,7 +58,7 @@ function OrderForm({ customers }: OrderFormProps ) {
     const result = await addDoc(ordersCollection, order);
     if(result) {
       toast(`Order created successfully`, { type: 'success' });
-      const points: number = Number(order.amount.toFixed(0));
+      const points = Math.floor(order.amount);
       updateDoc(docRef, {
         currentPoints: Number(customer?.currentPoints) + points,
         amountSpent: Number(customer?.amountSpent) + order.amount,
@@ -76,7 +76,7 @@ function OrderForm({ customers }: OrderFormProps ) {
     if(e.target.name == "amount") {
       setOrder({
         ...order,
-        [e.target.name]: Math.abs(parseInt(e.target.value))
+        [e.target.name]: Math.abs(parseFloat(e.target.value))
       })
     }else{
       setOrder({
