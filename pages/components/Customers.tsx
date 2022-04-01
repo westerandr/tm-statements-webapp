@@ -2,7 +2,6 @@ import { useState } from 'react'
 import CustomerForm from './CustomerForm';
 import CustomerList from './CustomerList';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import { Customer } from '../../lib/types';
 import { DocumentData, QuerySnapshot } from 'firebase/firestore';
 
@@ -29,10 +28,8 @@ function Customers({ customers, customersLoading }: CustomersProps) {
 
   return (
     <Container>
-      <Grid container spacing={5}>
-        <Grid item xs={12} md={6}><CustomerList customers={customers} customersLoading={customersLoading} setMode={handleModeChange} /></Grid>
-        <Grid item xs={12} md={6}><CustomerForm mode={mode} setMode={handleModeChange} editableCustomer={customer} /></Grid>
-      </Grid>
+      <CustomerList customers={customers} customersLoading={customersLoading} setMode={handleModeChange} />
+      <CustomerForm mode={mode} setMode={handleModeChange} editableCustomer={customer} />
     </Container>
 
   )

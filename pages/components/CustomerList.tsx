@@ -43,7 +43,7 @@ function CustomerList({ customers, customersLoading, setMode } : CustomerListPro
   }
 
   return (
-    <Container>
+    <Container maxWidth="lg" sx={{mt:'1rem', mb: '3rem'}}>
         <Typography variant="h6" gutterBottom>Customers</Typography>
        
         <List >

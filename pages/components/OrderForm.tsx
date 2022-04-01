@@ -1,12 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { database } from '../../config/firebase';
-import { doc, addDoc, updateDoc, getDocs, collection, query, where, Timestamp } from 'firebase/firestore';
+import { doc, addDoc, updateDoc, getDocs, collection, query, where, Timestamp, getDoc } from 'firebase/firestore';
 import { Container, Grid, Typography, Button, FormControl, TextField, InputAdornment, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { Customer } from '../../lib/types';
+import { Customer, Order } from '../../lib/types';
 import { toast } from 'material-react-toastify';
 
 type OrderFormProps = {
   customers: Customer[];
+  addOrder: (order: Order) => void;
 }
 
 const initState = {
@@ -20,7 +21,7 @@ const customersCollection = collection(database, 'users');
 const redemptionsCollection = collection(database, 'redemptions');
 const ordersCollection = collection(database, 'orders');
 
-function OrderForm({ customers }: OrderFormProps ) {
+function OrderForm({ customers, addOrder }: OrderFormProps ) {
   const [order, setOrder] = useState(initState);
   const [numRedemptionsAvailable, setNumRedemptionsAvailable] = useState(0);
 
@@ -58,6 +59,9 @@ function OrderForm({ customers }: OrderFormProps ) {
     const result = await addDoc(ordersCollection, order);
     if(result) {
       toast(`Order created successfully`, { type: 'success' });
+      const orderDoc = await getDoc(result);
+      const newOrderData = orderDoc.data();
+      addOrder({uid: result.id, amount: newOrderData?.amount, items: newOrderData?.items, user: newOrderData?.user, created: newOrderData?.created?.toDate() } as Order);
       const points = Math.floor(order.amount);
       updateDoc(docRef, {
         currentPoints: Number(customer?.currentPoints) + points,

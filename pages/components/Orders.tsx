@@ -17,9 +17,14 @@ function Orders({ customerDocs, customersLoading }: OrdersProps) {
   const [ customers, setCustomers ] = useState<any>([]);
   const [ orders, setOrders ] = useState<Order[] | null>(null);
 
+  const addNewOrder = (order: Order) => {
+    setOrders([order, ...orders!]);
+  }
+
   const fetchAndSetOrders = async () => {
     const q = query(ordersCollection, orderBy('created', 'desc'));
     const snapshot = await getDocs(q);
+    snapshot.docChanges
     const fetchedOrders: Order[] = [];
     snapshot.docs.map(doc => {
       const data = doc.data();
@@ -57,7 +62,7 @@ function Orders({ customerDocs, customersLoading }: OrdersProps) {
   return (
     <Container>
     <Grid container spacing={5}>
-      <Grid item xs={12}><OrderForm customers={customers} /></Grid>
+      <Grid item xs={12}><OrderForm customers={customers} addOrder={addNewOrder} /></Grid>
       <Grid item xs={12}><OrderHistory orders={orders} customers={customers} singleUser={false} /></Grid>
     </Grid>
   </Container>

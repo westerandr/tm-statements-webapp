@@ -33,7 +33,7 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
           
           >
             <TableCell component="th" scope="row">
-              {order.created.toDateString()}
+              {order?.created?.toDateString()}
             </TableCell>
             { !singleUser && <TableCell>{getCustomerName(order.user)}</TableCell>} 
             <TableCell>
