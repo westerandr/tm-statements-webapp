@@ -7,11 +7,10 @@ import  { collection, query, orderBy } from 'firebase/firestore';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Copyright from './components/Copyright';
 import Navbar from './components/Navbar';
-import Customers from './components/Customers';
-import Orders from './components/Orders';
+import { Customer } from '../lib/types';
+import HighPayingCustomers from './components/HighPayingCustomers';
 
 const customersCollection = collection(database, 'users');
 
@@ -32,6 +31,15 @@ const Home: NextPage = () => {
     return <></>;
   }
 
+  const customers: Customer[] | undefined = users?.docs.map(doc => {
+    return {
+      ...doc.data(),
+      uid: doc.id
+    } as Customer
+  });
+
+
+
   return (
     <>
       <Navbar />
@@ -45,9 +53,7 @@ const Home: NextPage = () => {
             alignItems: 'center',
           }}
         >
-          <Customers customers={users} customersLoading={usersloading}  />
-          <Divider sx={{my:'2rem'}} light />
-          <Orders customerDocs={users} customersLoading={usersloading} />
+          <HighPayingCustomers customers={customers} />
           <Copyright sx={{ mt: 8, mb: 4 }} />
         </Box>
       </Container>
