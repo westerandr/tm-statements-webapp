@@ -1,14 +1,43 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Button } from '@mui/material';
+import { TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, TableFooter, TablePagination } from '@mui/material';
 import React from 'react'
 import { Customer, Order } from '../../lib/types';
 
 type OrderHistoryProps = {
-  orders: Order[] | null;
+  orders: Order[] | undefined;
   customers: Customer[];
   singleUser: boolean;
 }
 
 function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
+  const [displayedOrders, setDisplayedOrders] = React.useState(orders);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  React.useEffect(() => {
+    paginate();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orders, page, rowsPerPage]);
+
+  const paginate = () => {
+    const start = page > 0 ? page * rowsPerPage : 0;
+    const end = start + rowsPerPage;
+    setDisplayedOrders(orders?.slice(start, end) || []);
+  }
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const getCustomerName = (uid: string) => {
     const customer = customers.find(customer => customer.uid === uid);
     if(!customer) return 'N/A';
@@ -27,7 +56,7 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
         </TableRow>
       </TableHead>
       <TableBody>
-        {orders && orders?.map((order) => (
+        {displayedOrders && displayedOrders?.map((order) => (
           <TableRow
             key={order.uid}
           
@@ -48,11 +77,19 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
               </ul>
               </TableCell>
             <TableCell>$ {order.amount}</TableCell>
-      
-
           </TableRow>
         ))}
-      </TableBody>
+      </TableBody>  
+      <TableFooter>
+        <TableRow>
+        <TablePagination
+          count={orders?.length || 0}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}  />
+        </TableRow>
+      </TableFooter>
     </Table>
   </TableContainer>
   )

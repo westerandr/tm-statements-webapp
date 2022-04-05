@@ -3,7 +3,7 @@ import { database } from '../../config/firebase';
 import { Container, Grid } from '@mui/material';
 import OrderForm from './OrderForm';
 import OrderHistory from './OrderHistory';
-import { DocumentData, QuerySnapshot, collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { DocumentData, QuerySnapshot, collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
 import { Customer, Order } from '../../lib/types';
 
 type OrdersProps = {
@@ -15,7 +15,7 @@ const ordersCollection = collection(database, 'orders');
 
 function Orders({ customerDocs, customersLoading }: OrdersProps) {
   const [ customers, setCustomers ] = useState<any>([]);
-  const [ orders, setOrders ] = useState<Order[] | null>(null);
+  const [ orders, setOrders ] = useState<Order[] | undefined>(undefined);
 
   const addNewOrder = (order: Order) => {
     setOrders([order, ...orders!]);
@@ -24,7 +24,6 @@ function Orders({ customerDocs, customersLoading }: OrdersProps) {
   const fetchAndSetOrders = async () => {
     const q = query(ordersCollection, orderBy('created', 'desc'));
     const snapshot = await getDocs(q);
-    snapshot.docChanges
     const fetchedOrders: Order[] = [];
     snapshot.docs.map(doc => {
       const data = doc.data();
