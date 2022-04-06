@@ -130,9 +130,10 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
           value={order.user}
           onChange={handleSelect}
           placeholder='Select Customer'
-         
+          disabled={customers?.length === 0 || false}
         >
-          {customers.map((customer) => (
+          {!customers || customers?.length === 0 && <MenuItem value="">No Customers Found. Create One First.</MenuItem>}
+          {customers && customers.length > 0 && customers?.map((customer) => (
             <MenuItem
               key={customer.uid}
               value={customer.uid}
@@ -173,7 +174,7 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
           />
         </FormControl>
         <FormControl sx={{ marginBottom: '1rem', width: '150px' }} >
-          <Button type='submit' variant="contained" color="secondary" disabled={customers.length < 1} >
+          <Button type='submit' variant="contained" color="secondary" disabled={customers?.length < 1 || false} >
             Place Order
           </Button>
         </FormControl>

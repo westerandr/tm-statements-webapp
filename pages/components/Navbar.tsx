@@ -13,7 +13,6 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import useFirebaseAuth from '../../lib/hooks/useFirebaseAuth';
-import Link from './Link';
 import { toast } from 'material-react-toastify';
 
 const settings = ['Logout'];
@@ -24,6 +23,8 @@ function Navbar() {
   const router = useRouter();
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const goHome = () => router.push('/');
 
   const logOut = () => {
     signOut();
@@ -70,9 +71,9 @@ function Navbar() {
             component="div"
             sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
           >
-            <Link href="/">
+            <div onClick={goHome} >
               <Avatar sx={{ width: 50, height: 50 }} src="/logo.jpg" />
-            </Link>
+            </div>
           </Typography>          
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -116,9 +117,9 @@ function Navbar() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}
           >
-             <Link href="/">
+            <div onClick={goHome} >
               <Avatar sx={{ width: 50, height: 50 }} src="/logo.jpg" />
-            </Link>
+            </div>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
