@@ -173,7 +173,7 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
             }}
           />
         </FormControl>
-        <FormControl sx={{ marginBottom: '1rem', width: '150px' }} >
+        <FormControl sx={{ marginBottom: '1rem' }} fullWidth >
           <Button type='submit' variant="contained" color="secondary" disabled={customers?.length < 1 || false} >
             Place Order
           </Button>
