@@ -56,6 +56,7 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
         </TableRow>
       </TableHead>
       <TableBody>
+        {displayedOrders && displayedOrders?.length < 1 && <TableRow><TableCell colSpan={4}>No orders found</TableCell></TableRow>}
         {displayedOrders && displayedOrders?.map((order) => (
           <TableRow
             key={order.uid}

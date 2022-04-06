@@ -206,7 +206,7 @@ function CustomerForm({ mode, setMode, editableCustomer} : CustomerFormProps) {
           </FormControl>
           </>
         }
-        <FormControl sx={{ marginBottom: '1rem' }} fullWidth>
+        <FormControl sx={{ marginBottom: '1rem', width: '150px' }} >
           <Button type='submit' variant="contained" color="secondary">
             { mode === 'create' ? 'Add' : 'Update' }
           </Button>

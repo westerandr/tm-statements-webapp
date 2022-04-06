@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Copyright from './components/Copyright';
-import { CircularProgress, Grid} from '@mui/material';
+import LoadingIndicator from './components/LoadingIndicator';
 import { useRouter } from 'next/router';
 import { useAuth } from '../lib/context/userContext';
 import useFirebaseAuth from '../lib/hooks/useFirebaseAuth';
@@ -52,13 +52,7 @@ export default function Login() {
   };
 
   if (loading) {
-    return <Container>
-      <Grid container sx={{width: '100%', height: '100vh'}} justifyContent="center" alignItems="center">
-        <Grid item sx={{width: '100%', height: '100%'}}>
-          <CircularProgress />
-        </Grid>
-      </Grid>
-    </Container>
+    return <LoadingIndicator />
   }
 
   return (

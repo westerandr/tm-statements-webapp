@@ -14,9 +14,10 @@ function HighPayingCustomers({customers}: HighPayingCustomersProps) {
 
   return (
     <Container sx={{my:'2rem'}}>
-      {customers && customers.length > 0 && (
+      <Typography variant='h3'>High paying customers</Typography>
+      <Container sx={{ py: '1.5rem'}}>
+      {customers && customers.length > 0 ? (
         <>
-           <Typography variant='h3'>High paying customers</Typography>
            <List>
               {customers.map((customer: Customer) => (
                 <ListItem key={customer.uid}>
@@ -25,7 +26,10 @@ function HighPayingCustomers({customers}: HighPayingCustomersProps) {
               ))}
            </List>
         </>
+        ) : (
+          <Typography variant='h5'>No customers found</Typography>
         )}
+      </Container>
     </Container>
   )
 }
