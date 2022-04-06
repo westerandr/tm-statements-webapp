@@ -13,7 +13,7 @@ function HighPayingCustomers({customers}: HighPayingCustomersProps) {
   customers = customers?.slice(0, 5);
 
   return (
-    <Container>
+    <Container sx={{my:'2rem'}}>
       {customers && customers.length > 0 && (
         <>
            <Typography variant='h3'>High paying customers</Typography>

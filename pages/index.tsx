@@ -11,6 +11,7 @@ import Copyright from './components/Copyright';
 import Navbar from './components/Navbar';
 import { Customer } from '../lib/types';
 import HighPayingCustomers from './components/HighPayingCustomers';
+import RecentOrders from './components/RecentOrdersChart';
 
 const customersCollection = collection(database, 'users');
 
@@ -54,6 +55,7 @@ const Home: NextPage = () => {
           }}
         >
           <HighPayingCustomers customers={customers} />
+          <RecentOrders />
           <Copyright sx={{ mt: 8, mb: 4 }} />
         </Box>
       </Container>
