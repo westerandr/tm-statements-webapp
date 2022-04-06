@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { database } from '../../config/firebase';
-import { collection, DocumentSnapshot, doc, deleteDoc, QuerySnapshot, DocumentData } from 'firebase/firestore';
+import { collection, DocumentSnapshot, doc, deleteDoc, QuerySnapshot, DocumentData, where, getDocs, query, getDoc } from 'firebase/firestore';
 import { Container, Typography, List, ListItem, ListItemText, ListItemIcon, IconButton, CircularProgress, Button } from '@mui/material';
 import { Customer } from '../../lib/types';
 import EditIcon  from '@mui/icons-material/Edit';
@@ -15,6 +15,8 @@ type CustomerListProps = {
 }
 
 const customersCollection = collection(database, 'users');
+const ordersColletion = collection(database, 'orders');
+const redemptionsCollection = collection(database, 'redemptions');
 
 function CustomerList({ customers, customersLoading, setMode } : CustomerListProps) {
   
@@ -25,13 +27,34 @@ function CustomerList({ customers, customersLoading, setMode } : CustomerListPro
     router.push(`/customers/${uid}`);
   }
 
+  const deleteCustomerOrdersAndRewards = async (uid: string) => {
+    // delete Order documents where customer uid matches
+    const orderQuery = query(ordersColletion, where('user', '==', uid));
+    const ordersSnapshot = await getDocs(orderQuery);
+    ordersSnapshot.docs.forEach(async (orderDoc) => {
+      await deleteDoc(orderDoc.ref);
+    });
+
+    // delete Redemptions documents where customer uid matches
+    const redemptionsQuery = query(redemptionsCollection, where('user', '==', uid));
+    const redemptionsSnapshot = await getDocs(redemptionsQuery);
+    redemptionsSnapshot.docs.forEach(async (redemptionDoc) => {
+      await deleteDoc(redemptionDoc.ref);
+    });
+
+    toast.success('Orders and rewards deleted');
+  }
+
   const confirmDeletion = (uid: string, handle: string) => {
     confirm({
       title: 'Delete Customer',
-      description: `Are you sure you want to delete ${handle}?`,
+      description: `Are you sure you want to delete ${handle}? You will lose all orders and rewards concerning this Customer.`,
       onConfirm: async () => {
         deleteDoc(doc(customersCollection, uid))
-          .then(() => toast.success(`Customer - ${handle} deleted`))
+          .then(() => {
+            toast.success(`Customer - ${handle} deleted`);
+            deleteCustomerOrdersAndRewards(uid);
+          })
           .catch(() => toast.error('Error deleting customer'));
       }
     })
