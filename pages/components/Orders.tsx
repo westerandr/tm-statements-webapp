@@ -32,6 +32,7 @@ function Orders({ customerDocs, customersLoading }: OrdersProps) {
         items: data.items,
         user: data.user,
         paid: data.paid,
+        discounted: data?.discounted || false,
         created: data.created.toDate(),
         uid: doc.id,
       } as Order);

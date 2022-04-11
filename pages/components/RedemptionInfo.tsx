@@ -10,10 +10,10 @@ const redemptionCollection = collection(database, 'redemptions');
 const customersCollection = collection(database, 'users');
 
 const rows = [
-  { points: 150, rewards: '10% Discount' },
-  { points: 200, rewards: 'Free Earrings' },
-  { points: 250, rewards: '15% Discount' },
-  { points: 400, rewards: '$70 Voucher' },
+  { points: 175, rewards: '10% Discount' },
+  { points: 210, rewards: 'Free Earrings' },
+  { points: 290, rewards: '15% Discount' },
+  { points: 410, rewards: '$70 Voucher' },
 ];
 
 type RedemptionInfoProps = {

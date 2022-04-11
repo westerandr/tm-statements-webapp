@@ -53,6 +53,8 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
           { !singleUser && <TableCell sx={{color:'white'}}>User</TableCell>}
           <TableCell sx={{color:'white'}}>Items</TableCell>
           <TableCell sx={{color:'white'}}>Amount</TableCell>
+          <TableCell sx={{color:'white'}}>Discounted</TableCell>
+
         </TableRow>
       </TableHead>
       <TableBody>
@@ -78,6 +80,8 @@ function OrderHistory({orders, customers, singleUser}: OrderHistoryProps) {
               </ul>
               </TableCell>
             <TableCell>$ {order.amount}</TableCell>
+            <TableCell>{order?.discounted ? 'Yes': 'No'}</TableCell>
+
           </TableRow>
         ))}
       </TableBody>  

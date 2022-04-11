@@ -1,9 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { database } from '../../config/firebase';
 import { doc, addDoc, updateDoc, getDocs, collection, query, where, Timestamp, getDoc } from 'firebase/firestore';
-import { Container, Grid, Typography, Button, FormControl, TextField, InputAdornment, InputLabel, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Container, Grid, Typography, Button, FormControl, TextField, InputAdornment, InputLabel, Select, MenuItem, SelectChangeEvent, Checkbox, FormGroup, FormControlLabel } from '@mui/material';
 import { Customer, Order } from '../../lib/types';
 import { toast } from 'material-react-toastify';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 type OrderFormProps = {
   customers: Customer[];
@@ -14,7 +17,8 @@ const initState = {
   amount: 0,
   items: "",
   user: "",
-  created: Timestamp.now(),
+  discounted: false,
+  created: new Date(),
 }
 
 const customersCollection = collection(database, 'users');
@@ -38,10 +42,6 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
       toast.error("Please fill out all fields");
       return;
     }
-    setOrder({
-      ...order,
-      created: Timestamp.now(),
-    });
 
     let customer: Customer | undefined;
     try{
@@ -56,13 +56,15 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
         return;
     }
     const docRef = doc(customersCollection, customer.uid);
-    const result = await addDoc(ordersCollection, order);
+    const result = await addDoc(ordersCollection, { ...order, created: Timestamp.fromDate(order.created) });
     if(result) {
       toast(`Order created successfully`, { type: 'success' });
       const orderDoc = await getDoc(result);
       const newOrderData = orderDoc.data();
       addOrder({uid: result.id, amount: newOrderData?.amount, items: newOrderData?.items, user: newOrderData?.user, created: newOrderData?.created?.toDate() } as Order);
-      const points = Math.floor(order.amount);
+      let price = newOrderData?.amount;
+      if(newOrderData?.discounted) price = price/2;
+      const points = Math.floor(price);
       updateDoc(docRef, {
         currentPoints: Number(customer?.currentPoints) + points,
         amountSpent: Number(customer?.amountSpent) + order.amount,
@@ -145,6 +147,19 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
             { numRedemptionsAvailable > 0 && <Typography color="secondary" variant="body2" gutterBottom> {`${numRedemptionsAvailable} Redemptions Available`} </Typography> }
         </FormControl>
         <FormControl sx={{ marginBottom: '1rem' }} fullWidth>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Date"
+            inputFormat='dd/MM/yyyy'
+            value={order.created}
+            onChange={(newValue) => {
+              setOrder({ ...order, created: new Date(newValue!) });
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        </FormControl>
+        <FormControl sx={{ marginBottom: '1rem' }} fullWidth>
           <TextField
             id="outlined-basic"
             label="Items"
@@ -173,6 +188,19 @@ function OrderForm({ customers, addOrder }: OrderFormProps ) {
             }}
           />
         </FormControl>
+        <FormGroup>
+          <FormControlLabel control={
+            <Checkbox 
+                size="medium" 
+                checked={order.discounted} 
+                value={order.discounted} 
+                color="secondary" 
+                onClick={() => setOrder({...order, discounted: !order.discounted})  }  
+            />
+          } 
+          label="Discounted" 
+          />
+        </FormGroup>
         <FormControl sx={{ marginBottom: '1rem' }} fullWidth >
           <Button type='submit' variant="contained" color="secondary" disabled={customers?.length < 1 || false} >
             Place Order

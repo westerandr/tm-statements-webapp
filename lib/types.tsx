@@ -13,6 +13,7 @@ export type Order = {
   created: Date;
   items: string;
   user: string;
+  discounted: boolean;
 }
 
 export type Redemption = {

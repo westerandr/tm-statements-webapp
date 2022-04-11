@@ -76,6 +76,7 @@ export async function getServerSideProps(context : any) {
        created: data.created.toDate().toISOString(), 
        items: data.items,  
        user: data.user, 
+       discounted: data.discounted || false,
        uid: doc.id });
   });
 
