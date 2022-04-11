@@ -12,13 +12,14 @@ type CustomerListProps = {
   customers: QuerySnapshot<DocumentData> | undefined;
   customersLoading: boolean;
   setMode: (mode: string, customer: Customer) => void;
+  scrollToForm: () => void;
 }
 
 const customersCollection = collection(database, 'users');
 const ordersColletion = collection(database, 'orders');
 const redemptionsCollection = collection(database, 'redemptions');
 
-function CustomerList({ customers, customersLoading, setMode } : CustomerListProps) {
+function CustomerList({ customers, customersLoading, setMode, scrollToForm } : CustomerListProps) {
   
   const router = useRouter();
   const confirm = useConfirmDialog();
@@ -88,7 +89,13 @@ function CustomerList({ customers, customersLoading, setMode } : CustomerListPro
                     </Button>
                   </ListItemIcon>
                   <ListItemIcon>
-                    <IconButton onClick={() => setMode('edit', customer)}>
+                    <IconButton 
+                      onClick={
+                        () => {
+                          setMode('edit', customer);
+                          scrollToForm();
+                        }
+                        }>
                       <EditIcon sx={{ color: 'orange' }} />
                     </IconButton>
                   </ListItemIcon>
